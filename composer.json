@@ -1,0 +1,25 @@
+{
+    "name": "Ironpinguin/BrowserBundle",
+    "type": "symfony-bundle",
+    "description": "Symfony BrowserBundle",
+    "keywords": ["http", "client", "curl"],
+    "homepage": "http://github.com/ironpinguin/BrowserBundle",
+    "license": "",
+    "authors": [
+        {
+            "name": "Michele Catalano",
+            "email": "michele@catalano.de",
+            "homepage": ""
+        }
+    ],
+    "require": {
+        "php": ">=5.3.*",
+
+        "symfony/symfony": "2.0.*",
+        "symfony/framework-bundle": "2.0.*"
+    },
+    "autoload": {
+        "psr-0": { "Ironpinguin\\BrowserBundle": ""}
+    },
+    "target-dir": "Ironpinguin/BrowserBundle"
+}
