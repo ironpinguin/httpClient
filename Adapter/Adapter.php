@@ -28,13 +28,13 @@ abstract class Adapter
     abstract function __construct(array $options);
     /**
      * @abstract
-     * @param Message\Request $request
+     * @param Request $request
      * @return mixed
      */
     abstract function send(Request $request);
 
     /**
-     * @param Message\Request $request
+     * @param Request $request
      */
     public function setRequest(Request $request)
     {
@@ -42,7 +42,7 @@ abstract class Adapter
     }
 
     /**
-     * @return Message\Request
+     * @return Request
      */
     public function getRequest()
     {
@@ -50,7 +50,7 @@ abstract class Adapter
     }
 
     /**
-     * @param Message\Response $response
+     * @param Response $response
      */
     public function setResponse(Response $response)
     {
@@ -58,7 +58,7 @@ abstract class Adapter
     }
 
     /**
-     * @return Message\Response
+     * @return Response
      */
     public function getResponse()
     {
