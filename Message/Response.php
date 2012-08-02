@@ -11,5 +11,28 @@ namespace Ironpinguin\BrowserBundle\Message;
 
 class Response extends Message
 {
+    private $_statusCode;
+
+    private $_statusMessage;
+
+    public function setStatusCode($status)
+    {
+        $this->_statusCode = $status;
+    }
+
+    public function getStatusCode()
+    {
+        return $this->_statusCode;
+    }
+
+    public function setStatusMessage($statusMessage)
+    {
+        $this->_statusMessage = $statusMessage;
+    }
+
+    public function getStatusMessage()
+    {
+        return $this->_statusMessage;
+    }
 
 }
