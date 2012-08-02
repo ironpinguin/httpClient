@@ -23,6 +23,7 @@ class Curl extends Adapter
      */
     public function __construct(array $options)
     {
+        $this->_curl = curl_init();
         // TODO: Implement __construct() method.
     }
 

@@ -13,6 +13,10 @@ use Ironpinguin\BrowserBundle\Adapter\Adapter;
 
 class Client
 {
+
+    const AUTH_BASIC  = 'basic';
+    const AUTH_DIGEST = 'digest';
+
     /**
      * @var Adapter
      */
