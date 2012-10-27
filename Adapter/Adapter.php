@@ -7,11 +7,11 @@
  * User: michele
  * Date: 29.07.12 14:23
  */
-namespace Ironpinguin\HttpClient\Adapter;
+namespace Ironpinguin\HttpClientBundle\Adapter;
 
-use Ironpinguin\HttpClient\Message\Message;
-use Ironpinguin\HttpClient\Message\Request;
-use Ironpinguin\HttpClient\Message\Response;
+use Ironpinguin\HttpClientBundle\Message\Message;
+use Ironpinguin\HttpClientBundle\Message\Request;
+use Ironpinguin\HttpClientBundle\Message\Response;
 
 abstract class Adapter
 {

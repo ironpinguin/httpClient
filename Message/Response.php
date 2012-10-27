@@ -7,7 +7,7 @@
  * User: michele
  * Date: 29.07.12 14:27
  */
-namespace Ironpinguin\HttpClient\Message;
+namespace Ironpinguin\HttpClientBundle\Message;
 
 class Response extends Message
 {

@@ -7,7 +7,7 @@
  * User: michele
  * Date: 29.07.12 14:26
  */
-namespace Ironpinguin\HttpClient\Message;
+namespace Ironpinguin\HttpClientBundle\Message;
 
 abstract class Message
 {
