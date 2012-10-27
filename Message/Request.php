@@ -7,7 +7,7 @@
  * User: michele
  * Date: 29.07.12 14:27
  */
-namespace Ironpinguin\BrowserBundle\Message;
+namespace Ironpinguin\HttpClient\Message;
 class Request extends Message
 {
     private $_baseUri;

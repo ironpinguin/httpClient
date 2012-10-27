@@ -7,9 +7,9 @@
  * User: michele
  * Date: 29.07.12 14:15
  */
-namespace Ironpinguin\BrowserBundle;
+namespace Ironpinguin\HttpClient;
 
-use Ironpinguin\BrowserBundle\Adapter\Adapter;
+use Ironpinguin\HttpClient\Adapter\Adapter;
 
 class Client
 {

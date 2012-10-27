@@ -7,12 +7,12 @@
  * User: michele
  * Date: 29.07.12 14:29
  */
-namespace Ironpinguin\BrowserBundle\Adapter;
+namespace Ironpinguin\HttpClient\Adapter;
 
-use Ironpinguin\BrowserBundle;
-use Ironpinguin\BrowserBundle\Message\Message;
-use Ironpinguin\BrowserBundle\Message\Request;
-use Ironpinguin\BrowserBundle\Message\Response;
+use Ironpinguin\HttpClient;
+use Ironpinguin\HttpClient\Message\Message;
+use Ironpinguin\HttpClient\Message\Request;
+use Ironpinguin\HttpClient\Message\Response;
 
 class Curl extends Adapter
 {
@@ -49,7 +49,7 @@ class Curl extends Adapter
     }
 
     /**
-     * @param \Ironpinguin\BrowserBundle\Message\Request $request
+     * @param \Ironpinguin\HttpClient\Message\Request $request
      * @return mixed|void
      */
     public function send(Request $request = null)

@@ -1,9 +1,9 @@
 {
-    "name": "Ironpinguin/BrowserBundle",
+    "name": "Ironpinguin/httpClient",
     "type": "symfony-bundle",
-    "description": "Symfony BrowserBundle",
+    "description": "Symfony HttpClientBundle",
     "keywords": ["http", "client", "curl"],
-    "homepage": "http://github.com/ironpinguin/BrowserBundle",
+    "homepage": "http://github.com/ironpinguin/httpClient",
     "license": "",
     "authors": [
         {
@@ -19,7 +19,7 @@
         "symfony/framework-bundle": "2.1.*"
     },
     "autoload": {
-        "psr-0": { "Ironpinguin\\BrowserBundle": ""}
+        "psr-0": { "Ironpinguin\\HttpClient": ""}
     },
-    "target-dir": "Ironpinguin/BrowserBundle"
+    "target-dir": "Ironpinguin/HttpClient"
 }

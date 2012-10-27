@@ -8,11 +8,11 @@
  * User: michele
  * Date: 29.07.12 04:56
  */
-namespace Ironpinguin\BrowserBundle;
+namespace Ironpinguin\HttpClient;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class IronpinguinBrowserBundle extends Bundle
+class IronpinguinHttpClient extends Bundle
 {
 
 }
