@@ -22,6 +22,8 @@ abstract class Message
 
     private $_rawBody = "";
 
+    private $_httpVersion = '1.1';
+
     public function getHeaders()
     {
         return $this->_header;
@@ -76,6 +78,16 @@ abstract class Message
     public function setRawBody($rawBody)
     {
         $this->_rawBody = $rawBody;
+    }
+
+    public function getHttpVersion()
+    {
+        return $this->_httpVersion;
+    }
+
+    public function setHttpVersion($httpVersion)
+    {
+        $this->_httpVersion = $httpVersion;
     }
 
 }

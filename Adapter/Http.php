@@ -26,7 +26,7 @@ class Http extends Adapter
      * @param Request $request
      * @return mixed
      */
-    function send(Request $request)
+    function send(Request $request = null)
     {
         // TODO: Implement send() method.
     }

@@ -31,7 +31,7 @@ abstract class Adapter
      * @param Request $request
      * @return mixed
      */
-    abstract function send(Request $request);
+    abstract function send(Request $request = null);
 
     /**
      * @param Request $request
