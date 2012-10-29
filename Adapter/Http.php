@@ -19,6 +19,7 @@ class Http extends Adapter
 
     function __construct(array $options)
     {
+        throw new \Exception("Not implemented!");
         // TODO: Implement __construct() method.
     }
 
