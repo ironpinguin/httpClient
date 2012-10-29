@@ -10,7 +10,6 @@
 namespace Ironpinguin\HttpClientBundle\Adapter;
 
 use Ironpinguin\HttpClientBundle;
-use Ironpinguin\HttpClientBundle\Message\Message;
 use Ironpinguin\HttpClientBundle\Message\Request;
 use Ironpinguin\HttpClientBundle\Message\Response;
 
@@ -20,10 +19,13 @@ class Curl extends Adapter
 
     /**
      * @param array $options
+     * @throws \Exception
      */
     public function __construct(array $options)
     {
-        $this->_checkOptions($options);
+        $this->_options = $options;
+
+        $this->_checkOptions();
 
         if (!extension_loaded('curl')) {
             throw new \Exception("Curl extension not loaded!");
@@ -35,21 +37,13 @@ class Curl extends Adapter
             throw new \Exception("Curl init failed with ".curl_error(($this->_curl)));
         }
 
-        curl_setopt_array($this->_curl, array(
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HEADER         => true,
-            CURLINFO_HEADER_OUT    => true,
-            CURLOPT_BUFFERSIZE     => $options['bufferSize'],
-            CURLOPT_CONNECTTIMEOUT => $options['connectionTimeout'],
-            CURLOPT_TIMEOUT        => $options['timeout'],
-            CURLOPT_FOLLOWLOCATION => 0 < $options['maxRedirects'],
-            CURLOPT_MAXREDIRS      => $options['maxRedirects'],
-            CURLOPT_FAILONERROR    => !$options['ignoreErrors'],
-        ));
+
+
     }
 
     /**
      * @param \Ironpinguin\HttpClientBundle\Message\Request $request
+     * @throws \Exception
      * @return mixed|void
      */
     public function send(Request $request = null)
@@ -60,7 +54,6 @@ class Curl extends Adapter
             {
                 throw new \Exception("No Request given!");
             }
-            $request = $this->_request;
         } else {
             $this->_request = $request;
         }
@@ -81,8 +74,10 @@ class Curl extends Adapter
         $this->_response->setHeaders($responseData['headers']);
         $this->_response->setStatusCode($responseData['code']);
         $this->_response->setStatusMessage($responseData['responsePhrase']);
-        $this->_response->setRawBody($responseData['content']);
+        $this->_response->setRawContent($responseData['content']);
         $this->_response->setHttpVersion($responseData['httpVersion']);
+
+        $this->_setCurlOptions();
 
         return $this->_response;
     }
@@ -92,31 +87,53 @@ class Curl extends Adapter
         curl_setopt($this->_curl, CURLOPT_CUSTOMREQUEST, $this->_request->getMethod());
         curl_setopt($this->_curl, CURLOPT_URL, $this->_request->getUri());
         curl_setopt($this->_curl, CURLOPT_HTTPHEADER, $this->_request->getHeadersToSend());
-        curl_setopt($this->_curl, CURLOPT_POSTFIELDS, $this->_request->getRawBody());
+        curl_setopt($this->_curl, CURLOPT_POSTFIELDS, $this->_request->getRawContent());
     }
 
-    private function _checkOptions(array $options)
+    private function _checkOptions()
     {
-        $requiredOptions = array('bufferSize' => 'int', 'connectionTimeout' => 'int', 'timeout' => 'int', 'maxRedirects' => 'int', 'ignoreErrors' => 'bool');
+        $requiredOptions = array(
+            'bufferSize' => 'int',
+            'connectionTimeout' => 'int',
+            'protocolVersion' => 'string',
+            'timeout' => 'int',
+            'maxRedirects' => 'int',
+            'proxyHost'        => 'string',
+            'proxyPort'        => 'int',
+            'proxyUser'        => 'string',
+            'proxyPassword'    => 'string',
+            'proxyAuthScheme' => 'string',
+            'proxyType'        => 'string',
+            'sslVerifyPeer'   => 'bool',
+            'sslVerifyHost'   => 'bool',
+            'followRedirects' => 'bool',
+            //'strictRedirects' => 'bool',
+            //'digestCompatIe'  => 'bool',
+        );
 
         foreach($requiredOptions as $name => $type)
         {
-            if (array_key_exists($name, $options))
+            if (array_key_exists($name, $this->_options))
             {
                 switch ($type)
                 {
                     case 'int':
-                        if(!is_integer($options[$name]))
+                        if(!is_integer($this->_options[$name]))
                         {
                             throw new \Exception("Option Parameter '$name' must be a Integer!");
                         }
                         break;
                     case 'bool':
-                        if (!is_bool($options[$name]))
+                        if (!is_bool($this->_options[$name]))
                         {
                             throw new \Exception("Option Parameter '$name' must be a Boolean!");
                         }
                         break;
+                    case 'string':
+                        if (!is_string($this->_options[$name]))
+                        {
+                            throw new \Exception("Option Parameter '$name' must be a String!");
+                        }
                     default:
                         throw new \Exception("Option Parameter '$name' is from wrong Type!");
                 }
@@ -161,18 +178,86 @@ class Curl extends Adapter
         }
 
         $firstLine = explode(' ', $headers[0]);
-        list(, $result['code']) = explode(' ', $headers[0]);
-        list($result['httpVersion']) = explode(' ', $firstLine[0]);
-        list(,, $result['responsePhrase']) = explode(' ', $firstLine[2], 3);
+        $result['code'] = $firstLine[1];
+        $result['httpVersion'] = $firstLine[0];
+        list(,, $result['responsePhrase']) = explode(' ', $headers[0], 3);
         array_shift($headers);
 
         foreach($headers as $header)
         {
-            list($headerName, $headerValue) = explode(': ', $header, 1);
+            list($headerName, $headerValue) = explode(': ', $header);
             $result['headers'][$headerName] = $headerValue;
         }
 
         return $result;
     }
 
+    private function _setCurlOptions()
+    {
+        $curlOptsArray = array(
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER         => true,
+            CURLINFO_HEADER_OUT    => true,
+            CURLOPT_BUFFERSIZE     => $this->_options['bufferSize'],
+            CURLOPT_CONNECTTIMEOUT => $this->_options['connectionTimeout'],
+            CURLOPT_TIMEOUT        => $this->_options['timeout'],
+        );
+        if ($this->_options['protocolVersion'] == '1.1')
+        {
+            $curlOptsArray[CURLOPT_HTTP_VERSION] = CURL_HTTP_VERSION_1_1;
+        } else {
+            $curlOptsArray[CURLOPT_HTTP_VERSION] = CURL_HTTP_VERSION_1_0;
+        }
+        $curlOptsArray[CURLOPT_FOLLOWLOCATION] = $this->_options['followRedirects'];
+        $curlOptsArray[CURLOPT_MAXREDIRS] = $this->_options['maxRedirects'];
+
+        if ($this->_options['proxyHost'] != '')
+        {
+            $curlOptsArray[CURLOPT_PROXY] = $this->_options['proxyHost'];
+            if ($this->_options['proxyPort'] != 0)
+            {
+                $curlOptsArray[CURLOPT_PROXYPORT] = $this->_options['proxyPort'];
+            }
+            switch($this->_options['proxyType'])
+            {
+                case 'http':
+                    $curlOptsArray[CURLOPT_PROXYTYPE] = CURLPROXY_HTTP;
+                    break;
+                case 'socks5':
+                    $curlOptsArray[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS5;
+                    break;
+                case 'socks4':
+                    $curlOptsArray[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS4;
+                    break;
+                default:
+                    throw new \Exception("Unknown proxy type ".$this->_options['proxyType']);
+            }
+            if ($this->_options['proxyUser'] != '' && $this->_options['proxyPassword'] != '')
+            {
+                $curlOptsArray[CURLOPT_PROXYUSERPWD] = $this->_options['proxyUser'].":".
+                    $this->_options['proxyPassword'];
+            }
+            if ($this->_options['proxyAuthScheme'] == \Ironpinguin\HttpClientBundle\Client::AUTH_BASIC)
+            {
+                $curlOptsArray[CURLOPT_PROXYAUTH] = CURLAUTH_BASIC;
+            }
+        }
+        $curlOptsArray[CURLOPT_SSL_VERIFYPEER] = $this->_options['sslVerifyPeer'];
+        $curlOptsArray[CURLOPT_SSL_VERIFYHOST] = $this->_options['sslVerifyHost'];
+        if ($this->_options['sslVerifyHost'])
+        {
+            $curlOptsArray[CURLOPT_SSL_VERIFYHOST] = 2;
+        }
+
+        if (!empty($this->_options['sslLocalCert']))
+        {
+            $curlOptsArray[CURLOPT_SSLCERT] = $this->_options['sslLocalCert'];
+            if (!empty($this->_options['sslPassphrase']))
+            {
+                $curlOptsArray[CURLOPT_SSLCERTPASSWD] = $this->_options['sslPassphrase'];
+            }
+        }
+
+        curl_setopt_array($this->_curl, $curlOptsArray);
+    }
 }
