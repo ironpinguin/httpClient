@@ -26,33 +26,31 @@ class Client
      * @var array
      */
     protected $_config = array(
-        'adapter'   => 'Adapter\Http',
-        'connect_timeout'   => 10,
+        'adapter'           => 'Adapter\Curl',
+        'connectTimeout'   => 10,
         'timeout'           => 0,
-        'use_brackets'      => true,
-        'protocol_version'  => '1.1',
-        'buffer_size'       => 16384,
-        'store_body'        => true,
+        'protocolVersion'  => '1.1',
+        'bufferSize'       => 16384,
 
-        'proxy_host'        => '',
-        'proxy_port'        => '',
-        'proxy_user'        => '',
-        'proxy_password'    => '',
-        'proxy_auth_scheme' => self::AUTH_BASIC,
-        'proxy_type'        => 'http',
+        'proxyHost'        => '',
+        'proxyPort'        => 0,
+        'proxyUser'        => '',
+        'proxyPassword'    => '',
+        'proxyAuthScheme' => self::AUTH_BASIC,
+        'proxyType'        => 'http',
 
-        'ssl_verify_peer'   => true,
-        'ssl_verify_host'   => true,
-        'ssl_cafile'        => null,
-        'ssl_capath'        => null,
-        'ssl_local_cert'    => null,
-        'ssl_passphrase'    => null,
+        'sslVerifyPeer'   => true,
+        'sslVerifyHost'   => true,
+        'sslCafile'        => null,
+        'sslCapath'        => null,
+        'sslLocalCert'    => null,
+        'sslPassphrase'    => null,
 
-        'digest_compat_ie'  => false,
+        'digestCompatIe'  => false,
 
-        'follow_redirects'  => false,
-        'max_redirects'     => 5,
-        'strict_redirects'  => false
+        'followRedirects'  => false,
+        'maxRedirects'     => 5,
+        'strictRedirects'  => false
     );
 
     /**
@@ -61,6 +59,11 @@ class Client
     public function setConfig(array $config)
     {
         $this->_config = $config;
+    }
+
+    public function getConfig()
+    {
+        return $this->_config;
     }
 
     public function setAdapter($adapter)
@@ -89,7 +92,7 @@ class Client
     {
         try
         {
-            $adapterInstance = new $adapter();
+            $adapterInstance = new $adapter($this->_config);
             if ($adapterInstance instanceof Adapter)
             {
                 return $adapterInstance;
@@ -107,7 +110,20 @@ class Client
 
     public function send($request = null)
     {
-        // TODO: Implement send() method.
+        if ($request == null)
+        {
+            //TODO implement a Request object generator
+            throw new \Exception("Request generator is not implemented yet!");
+        }
+
+        if(!($this->_adapter instanceof Adapter))
+        {
+            $this->_loadAdapter($this->_config['adapter']);
+        }
+
+        $response = $this->_adapter->send($request);
+
+        return $response;
     }
 
 }
