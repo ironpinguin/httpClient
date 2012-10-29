@@ -70,12 +70,12 @@ abstract class Message
         return $result;
     }
 
-    public function getRawBody()
+    public function getRawContent()
     {
         return $this->_rawBody;
     }
 
-    public function setRawBody($rawBody)
+    public function setRawContent($rawBody)
     {
         $this->_rawBody = $rawBody;
     }
