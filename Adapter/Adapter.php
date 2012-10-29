@@ -9,7 +9,6 @@
  */
 namespace Ironpinguin\HttpClientBundle\Adapter;
 
-use Ironpinguin\HttpClientBundle\Message\Message;
 use Ironpinguin\HttpClientBundle\Message\Request;
 use Ironpinguin\HttpClientBundle\Message\Response;
 
@@ -24,6 +23,11 @@ abstract class Adapter
      * @var Response
      */
     protected $_response;
+
+    /**
+     * @var \array
+     */
+    protected $_options;
 
     abstract function __construct(array $options);
     /**
